@@ -19,7 +19,7 @@ framelen=1001;
 inBands=loadPatient(dirName);
 
 % define time
-T=0.0005:0.0005:length(inBand{1})/Fs';
+T=0.0005:0.0005:length(inBands{1})/Fs';
 T=T';
 
 %% signal smoothing
@@ -35,10 +35,10 @@ inBandDerivatives=calculateBandDerivatives(inBandSmooth, Fs, degree, g);
 
 %% selecting baseline
 
-idxBaseline = selectBaseline(T,inBandSmooth, inBandDerivative, baselineEnd);
+idxBaseline = selectBaseline(T,inBandSmooth, inBandDerivatives, baselineEnd);
 %% OFFSET
 
-inBandOffset = offsetBand(inBandSmooth,idxBaseline);
+inBandOffset = offsetBands(inBands, inBandSmooth,idxBaseline);
 
 %% plotting full timeline
 
