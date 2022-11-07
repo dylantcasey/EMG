@@ -42,6 +42,17 @@ inBandOffset = offsetBand(inBandSmooth,idxBaseline);
 
 %% plotting full timeline
 
+%separate out bands for plotting
+inBand1Offset=inBandOffset{1};
+inBand2Offset=inBandOffset{2};
+inBand3Offset=inBandOffset{3};
+inBand4Offset=inBandOffset{4};
+
+inBand1Der=inBandDerivatives{1};
+inBand2Der=inBandDerivatives{2};
+inBand3Der=inBandDerivatives{3};
+inBand4Der=inBandDerivatives{4};
+
 %downsample
 idxSample=1:1000:length(T);
 
@@ -52,13 +63,13 @@ title(tile,'whole signals')
 
 % smooth plot
 nexttile
-plot(T(idxSample),inBand1SmoothOffset(idxSample), 'LineWidth',2)
+plot(T(idxSample),inBand1Offset(idxSample), 'LineWidth',2)
 hold on
-plot(T(idxSample),inBand2SmoothOffset(idxSample), 'LineWidth',2)
+plot(T(idxSample),inBand2Offset(idxSample), 'LineWidth',2)
 hold on
-plot(T(idxSample),inBand3SmoothOffset(idxSample), 'LineWidth',2)
+plot(T(idxSample),inBand3Offset(idxSample), 'LineWidth',2)
 hold on
-plot(T(idxSample),inBand4SmoothOffset(idxSample), 'LineWidth',2)
+plot(T(idxSample),inBand4Offset(idxSample), 'LineWidth',2)
 legend('band 1', 'band 2', 'band 3', 'band 4')
 title('smoothed bands')
 xlabel('time (s)')
