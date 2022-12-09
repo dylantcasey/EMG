@@ -1,4 +1,4 @@
-function inBandSmooth=smoothBands(inBands, framelen, b)
+function inBandSmooth=smoothBands(inBands, framelen,b)
 %function takes inBands and smooths the signal
 %
 %INPUTS 
@@ -12,6 +12,8 @@ function inBandSmooth=smoothBands(inBands, framelen, b)
 %call example: smoothBands(inBand(1:2), 1001, b);
 %
 %%
+
+disp(' begin smoothing '); disp(' ')
 n=length(inBands);
 inBandSmooth=cell(n,1);
 
@@ -21,6 +23,7 @@ for i = 1:n
     ybegin = b(end:-1:(framelen+3)/2,:) * inBand(framelen:-1:1);
     yend = b((framelen-1)/2:-1:1,:) * inBand(end:-1:end-(framelen-1));
     inBandSmooth{i}=[ybegin; ycenter; yend];
+%     inBandSmooth{i}=sgolayfilt(inBand,3,framelen);
 end
-
+disp(' end smoothing '); disp(' ')
 end

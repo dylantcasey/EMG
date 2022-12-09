@@ -1,4 +1,4 @@
-function inBandDerivatives=calculateBandDerivatives(inBandSmooth, Fs, p, g)
+function inBandDerivatives=calculateBandDerivatives(inBands, Fs, p,g)
 %function takes smoothed inBands and calculates their derivatives
 %
 %INPUTS 
@@ -13,13 +13,20 @@ function inBandDerivatives=calculateBandDerivatives(inBandSmooth, Fs, p, g)
 %call example: calculateBandDerivatives(inBandSmooth(1:2), 2000, 1, g);
 %
 %%
-n=length(inBandSmooth);
+disp(' Calculating derivatives'); disp(' ')
+
+n=length(inBands);
 dt=1/Fs;
 inBandDerivatives=cell(n,1);
 
 for i = 1:n
-    inBand=inBandSmooth{i};
+%     inBandDerivatives{i}=gradient(inBands{i},dt);
+    inBand=inBands{i};
     inBandDerivatives{i}= conv(inBand, factorial(p)/(-dt)^p * g(:,p+1), 'same');
 end
+% 
+% inBandDerivativesSmooth = smoothBands(inBandDerivatives, framelen);
+
+disp(' After a Calculus I refresher, I am done'); disp(' ')
 
 end

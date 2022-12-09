@@ -1,4 +1,4 @@
-function inBandOffset=offsetBands(inBands, inBandSmooth, index)
+function [inBandOffset,data]=offsetBands(inBands, inBandSmooth, index, data)
 %function takes smoothed inBands to subtract off the mean of the raw data
 %in the baseline range
 %
@@ -13,14 +13,23 @@ function inBandOffset=offsetBands(inBands, inBandSmooth, index)
 %call example: calculateBandDerivatives(inBandSmooth(1:2), 2000, 1, g);
 %
 %%
+
+disp('  Offsetting bands'); disp(' ')
 n=length(inBandSmooth);
 inBandOffset=cell(n,1);
-
+offsetMat=zeros(4,1);
+offsetSTD=offsetMat;
 for i = 1:n
-    raw=inBands{1};
+    raw=inBands{i};
     smooth=inBandSmooth{i};
-    offset=mean(raw(index(1):index(2)));
-    inBandOffset{i}= smooth-offset;
+    offsetMean=mean(raw(index(1):index(2)));
+    offsetSTD = std(raw(index(1):index(2)));
+    offsetMat(i)=offsetMean;
+    inBandOffset{i}= smooth-offsetMean;
 end
+
+data.offset_mean=offsetMat;
+data.offset_std=offsetSTD;
+disp('  Did I even blink? '); disp(' ')
 
 end

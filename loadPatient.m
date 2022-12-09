@@ -1,4 +1,4 @@
-function inBands = loadPatient(dirName)
+function [inBands,data] = loadPatient(dirName, data)
 %function extracts all 4 inBands from each report for a patient, combines
 %them and returns them
 %
@@ -12,6 +12,7 @@ function inBands = loadPatient(dirName)
 %
 % dirName = /Users/dtcasey/Documents/MATLAB/EMG/20220913-UVM-EMG-028/Analyzed Data;
 %%
+disp(' Loading patient, so be patient'); disp(' ')
 
 dReports=dir(dirName);
 dReportsCell=struct2cell(dReports);
@@ -82,4 +83,16 @@ inBands{2}=inBand2;
 inBands{3}=inBand3;
 inBands{4}=inBand4;
 
+% check if anesthetic times already exist
+latestData = find(contains(dReportsCell(1,:),'caseData'), 1, 'last' );
+if ~isempty(latestData)
+    fileName=[dirName,'/',dReportsCell{1,latestData}];
+    dataOld=load(fileName);
+    data.anesthetic_time=dataOld.data.anesthetic_time;
+    data.needle_time=dataOld.data.needle_time;
+    data.onset_best_iteration=dataOld.data.onset_best_iteration;
+end
+
+
+disp(' Done loading patient. Not so bad, huh?'); disp(' ')
 end

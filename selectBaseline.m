@@ -1,4 +1,4 @@
-function index = selectBaseline(T, inBandSmooth, inBandDerivative, baselineEnd)
+function [index, data] = selectBaseline(T, inBandSmooth, inBandDerivative, baselineEnd, data)
 %function plots all 4 inBands with their derivatives. Allows manipulation
 %of the plots, pressing *space* to continue. Allows to select a beginning
 %and end points with the mouse, pressing *enter* to finish. Returns their
@@ -15,8 +15,11 @@ function index = selectBaseline(T, inBandSmooth, inBandDerivative, baselineEnd)
 %  
 %call example: selectBaseline(time, Smooth, Derivative, 1500);
 %
+% CHECK FOR PREVIOUS SELECTION OR WRITE A NEW ONE
 %%
+disp('  Time to choose your baseline! Carefully.'); disp(' ')
 
+Fs=round(1/mean(diff(T)));
 %separate smooth bands
 inBand1Smooth=inBandSmooth{1};
 inBand2Smooth=inBandSmooth{2};
@@ -30,12 +33,14 @@ inBand3Der=inBandDerivative{3};
 inBand4Der=inBandDerivative{4};
 %%
 %plot baseline region
-figure(193)
+fig=figure(193);
+fig.Units='normalized';
+fig.Position = [0.05 0.3 0.9 0.45];
 clf
 tile=tiledlayout(2,1);
 title(tile,'Baseline plots')
 
-baselineRange= baselineEnd-300*2000:baselineEnd;
+baselineRange = baselineEnd-300*2000:baselineEnd;
 ax1=nexttile;
 plot(T(baselineRange),inBand1Smooth(baselineRange), 'LineWidth',2)
 hold on
@@ -71,9 +76,11 @@ linkaxes([ax1 ax2],'x');
 % GUI input
 hold on
 
-disp('  ** press SPACE when ready to select points **')
+disp('  ** press SPACE when ready to select points **'); disp(' ')
 w=1;
 while w~=0
+  disp('  ** Try to find a section where derivative is close to 0 **'); disp(' ')
+  disp('  ** preferably greater than 10 seconds **'); disp(' ')
   w = waitforbuttonpress;
   while w==0
     w = waitforbuttonpress;
@@ -83,38 +90,32 @@ while w~=0
   if ch == 13 % ENTER button
       %Check to make sure that the start time is before the end time OR swap them
         if end1x < strt1x
-            disp('  ** Swapping start and end times **')
+            disp('  Swapping start and end times'); disp(' ')
             end_temp = end1x;
             end1x = strt1x;
             strt1x = end_temp;
         end
-
+        
         %Compute the duration of the baseline segment
         delta1x = end1x - strt1x;
+
         disp(['baseline segment is ', num2str(delta1x),' seconds'])
-        if delta1x>10
-            disp('  ** Exiting baseline selection **')
-            break;
-        else
-            disp('baseline segment is not long enough, idiot. Try again. >10 SECONDS this time!!')
-            children = get(gca, 'children');
-            delete(children(1));
-            delete(children(2));
-            disp('  ** press ENTER when done selecting points **')
-        end
+        break
+%         if delta1x>10
+%             disp('  Exiting baseline selection'); disp(' ')
+%             break;
+%         else
+%             disp('baseline segment is not long enough, idiot. Try again. >10 SECONDS this time!!'); disp(' ')
+%             children = get(gca, 'children');
+%             delete(children(1));
+%             delete(children(2));
+%             disp('  ** press ENTER when done selecting points **'); disp(' ')
+%         end
   end
   if ch == 32 % SPACE button
-      disp('  ** press ENTER when done selecting points **')
+      disp('  ** press ENTER when done selecting points **'); disp(' ')
   end
-%   if ch == 8 % Backspace button
-%     if isempty(x) == 0
-%         x = x(1:end-1);
-%         y = y(1:end-1);
-%         delete(h(end));
-%         h = h(1:end-1);
-%         continue;
-%     end
-%   end
+
 f6b=waitbar(.5,'*** Click on the START of the Baseline period ***');
         th = findall(f6b, 'Type', 'Text');
         th.FontSize = 14;
@@ -140,4 +141,16 @@ idxStart = find(T>strt1x,1);      %Start index
 idxEnd = find(T<end1x, 1, 'last' ); 
 
 index = [idxStart; idxEnd];
+
+disp('  I guess you are going with that... '); disp(' ')
+close(193)
+
+%save data
+% save data
+data.baseline_start_index = idxStart; 
+data.baseline_start_time = idxStart/Fs; 
+data.baseline_end_index = idxEnd; 
+data.baseline_end_time = idxEnd/Fs; 
+data.baseline_duration = idxEnd/Fs - idxStart/Fs;
+
 end
