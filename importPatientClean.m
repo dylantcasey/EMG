@@ -2,8 +2,7 @@
 
 % GUI input
 % find your patient and select the "Analyzed Data" file
-% dirName=uigetdir;
-dirName='/Users/dtcasey/Documents/MATLAB/EMG/20220913-UVM-EMG-028/Analyzed Data';
+dirName=uigetdir;
 
 baselineEnd = 1500*2000; %2000 is 1 second
 
